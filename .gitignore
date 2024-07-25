@@ -3,3 +3,4 @@
 /log/
 djvenv
 siteforum/person/static/person/images
+__pycache__
