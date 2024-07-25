@@ -4,14 +4,31 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 
 
+menu = ['О сайте', 'Добавить статью', 'Обратная связь', 'Войти']
+
+
+class MyClass:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+
+
 def index(request):
     # t = render_to_string('person/index.html')
     # return HttpResponse(t)
-    return render(request, 'person/index.html')
+    data = {'title': 'Главная страница',
+            'menu': menu,
+            'float': 28.56,
+            'lst': [1, 2, 'abc', True],
+            'set': {1, 2, 3, 2, 5},
+            'dict': {'key_1': 'value1',
+                     'key_2': 'value2'},
+            'obj': MyClass(10,20)}
+    return render(request, 'person/index.html', context=data)
 
 
 def about(request):
-    return render(request, 'person/about.html')
+    return render(request, 'person/about.html', {'title': 'О сайте', 'menu': menu})
 
 
 def categories(request, cat_id):
