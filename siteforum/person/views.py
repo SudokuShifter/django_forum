@@ -21,6 +21,13 @@ data_db = [{'id': 1, 'title': 'Пучан1',
            {'id': 3, 'title': 'Пучан3', 'content': 'Биография пучана3', 'is_published': True}]
 
 
+cats_db = [
+    {'id': 1, 'name': 'Актёры'},
+    {'id': 2, 'name': 'Певцы'},
+    {'id': 3, 'name': 'Спортсмены'}
+]
+
+
 def index(request):
     # t = render_to_string('person/index.html')
     # return HttpResponse(t)
@@ -28,6 +35,7 @@ def index(request):
         'title': 'Главная страница',
         'menu': menu,
         'posts': data_db,
+        'cat_selected': 0,
     }
     return render(request, 'person/index.html', context=data)
 
@@ -66,6 +74,16 @@ def login(request):
 #         uri = reverse('cats', args=('sport', ))
 #         return HttpResponsePermanentRedirect(uri)
 #     return HttpResponse(f'<h1>Архив по категориям</h1><p>{year}</p>')
+
+
+def show_category(request, cat_id):
+    data = {
+        'title': 'Отображение по рубрикам',
+        'menu': menu,
+        'posts': data_db,
+        'cat_selected': cat_id,
+    }
+    return render(request, 'person/index.html', data)
 
 
 def page_not_found404(request, exception):
