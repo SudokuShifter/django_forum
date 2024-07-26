@@ -30,7 +30,7 @@ cats_db = [
 
 
 def index(request):
-    posts = Person.objects.filter(is_published=1)
+    posts = Person.published.all()
     # t = render_to_string('person/index.html')
     # return HttpResponse(t)
     data = {
