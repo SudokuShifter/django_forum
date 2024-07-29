@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
-from .models import Person
+from .models import Person, Category, TagPost
 
 menu = [{'title': 'О сайте', 'url_name': 'about'},
         {'title': 'Добавить статью', 'url_name': 'add_page'},
@@ -20,13 +20,6 @@ data_db = [{'id': 1, 'title': 'Пучан1',
             'is_published': True},
            {'id': 2, 'title': 'Пучан2', 'content': 'Биография пучана2', 'is_published': False},
            {'id': 3, 'title': 'Пучан3', 'content': 'Биография пучана3', 'is_published': True}]
-
-
-cats_db = [
-    {'id': 1, 'name': 'Актёры'},
-    {'id': 2, 'name': 'Певцы'},
-    {'id': 3, 'name': 'Спортсмены'}
-]
 
 
 def index(request):
@@ -87,14 +80,30 @@ def login(request):
 #     return HttpResponse(f'<h1>Архив по категориям</h1><p>{year}</p>')
 
 
-def show_category(request, cat_id):
+def show_category(request, cat_slug):
+    category = get_object_or_404(Category, slug=cat_slug)
+    posts = Person.published.filter(cat_id=category.pk)
     data = {
-        'title': 'Отображение по рубрикам',
+        'title': f'Рубрика: {category.name}',
         'menu': menu,
-        'posts': data_db,
-        'cat_selected': cat_id,
+        'posts': posts,
+        'cat_selected': category.pk,
     }
     return render(request, 'person/index.html', data)
+
+
+def show_tag_post_list(request, tag_slug):
+    tag = get_object_or_404(TagPost, slug=tag_slug)
+    posts = tag.tags.filter(is_published=Person.Status.PUBLISHED)
+
+    data = {
+        'title': f'Тег: {tag.tag}',
+        'menu': menu,
+        'posts': posts,
+        'cat_selected': None,
+    }
+
+    return render(request, 'person/index.html', context=data)
 
 
 def page_not_found404(request, exception):
