@@ -20,6 +20,8 @@ from person import views
 
 handler404 = views.page_not_found404
 handler500 = views.page_not_found500
+admin.site.site_header = 'Панель администрирования'
+admin.site.index_title = 'Модели для взаимодействия'
 
 urlpatterns = [
     path('admin/', admin.site.urls),

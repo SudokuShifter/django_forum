@@ -33,6 +33,8 @@ class Person(models.Model):
         return self.title
 
     class Meta:
+        verbose_name = 'Персоны'
+        verbose_name_plural = 'Персоны'
         ordering = ['-time_create']
         indexes = [
             models.Index(fields=['-time_create'])
