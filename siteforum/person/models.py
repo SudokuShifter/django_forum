@@ -67,6 +67,7 @@ class TagPost(models.Model):
 class Wife(models.Model):
     name = models.CharField(max_length=100)
     age = models.IntegerField(null=True)
+    w_count = models.IntegerField(blank=True, default=0)
 
     def __str__(self):
         return self.name
