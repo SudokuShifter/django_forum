@@ -10,20 +10,9 @@ menu = [{'title': 'О сайте', 'url_name': 'about'},
         {'title': 'Обратная связь', 'url_name': 'contact'},
         {'title': 'Войти', 'url_name': 'login'}]
 
-data_db = [{'id': 1, 'title': 'Пучан1',
-            'content': 'Выпускник факультета автоматизированных систем и технологий Костромского государственного '
-                       'технологического университета, направление «Информационные системы». С тех пор и являюсь '
-                       'разработчиком ПО, использую в основном технологии Microsoft, главным образом — для Web. '
-                       'Участвовал в IT-проектах различной сложности: от веб-сайтов городской администрации до '
-                       'комплексных софтверных решений для израильских телекоммуникационных и финансовых компаний. '
-                       'Больше 5 лет работал в группе компаний Softline, в том числе над проектом DeskWork.',
-            'is_published': True},
-           {'id': 2, 'title': 'Пучан2', 'content': 'Биография пучана2', 'is_published': False},
-           {'id': 3, 'title': 'Пучан3', 'content': 'Биография пучана3', 'is_published': True}]
-
 
 def index(request):
-    posts = Person.published.all()
+    posts = Person.published.all().select_related('cat')
     # t = render_to_string('person/index.html')
     # return HttpResponse(t)
     data = {
@@ -82,7 +71,7 @@ def login(request):
 
 def show_category(request, cat_slug):
     category = get_object_or_404(Category, slug=cat_slug)
-    posts = Person.published.filter(cat_id=category.pk)
+    posts = Person.published.filter(cat_id=category.pk).select_related('cat')
     data = {
         'title': f'Рубрика: {category.name}',
         'menu': menu,
@@ -94,7 +83,7 @@ def show_category(request, cat_slug):
 
 def show_tag_post_list(request, tag_slug):
     tag = get_object_or_404(TagPost, slug=tag_slug)
-    posts = tag.tags.filter(is_published=Person.Status.PUBLISHED)
+    posts = tag.tags.filter(is_published=Person.Status.PUBLISHED).select_related('cat')
 
     data = {
         'title': f'Тег: {tag.tag}',
