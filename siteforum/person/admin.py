@@ -18,11 +18,17 @@ class MarriedFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value() == 'married':
             return queryset.filter(wife__isnull=False)
-        return queryset.filter(wife__isnull=True)
+        elif self.value() == 'single':
+            return queryset.filter(wife__isnull=True)
 
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
+    fields = ['title', 'content', 'slug', 'cat', 'wife', 'tags']
+    # exclude = ['tags', 'is_published']
+    # readonly_fields = ['slug']
+    prepopulated_fields = {'slug': ('title', )}
+    filter_horizontal = ['tags']
     list_display = ('title', 'time_create', 'is_published', 'cat', 'breif_info')
     list_display_links = ('title', )
     ordering = ['time_create', 'title']
