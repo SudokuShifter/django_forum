@@ -47,7 +47,16 @@ def addpage(request):
     if request.method == 'POST':
         form = AddPostForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
+            """
+            Вариант сохранения данных в БД
+            try:
+                Person.objects.create(**form.cleaned_data)
+                return redirect('home')
+            except:
+                form.add_error(None, 'Ошибка добавления поста')
+            """
+            form.save()
+            return redirect('home')
     else:
         form = AddPostForm()
     data = {
@@ -66,20 +75,24 @@ def login(request):
     return HttpResponse('Авторизация')
 
 
-# def categories(request, cat_id):
-#     return HttpResponse(f'<h1>Статьи по категориям</h1><p>{cat_id}</p>')
-#
-#
-# def categories_by_slug(request, cat_slug):
-#     return HttpResponse(f'<h1>Статьи по категориям</h1><p>{cat_slug}</p>')
-#
-#
-# def archive(request, year):
-#     if year > 2024:
-#         """permanent=True - доп параметр для 301 редиректа"""
-#         uri = reverse('cats', args=('sport', ))
-#         return HttpResponsePermanentRedirect(uri)
-#     return HttpResponse(f'<h1>Архив по категориям</h1><p>{year}</p>')
+"""
+Работа со SlUG и Редирект (редирект 301 - постоянный переезд адреса, 302 - временный)
+
+def categories(request, cat_id):
+    return HttpResponse(f'<h1>Статьи по категориям</h1><p>{cat_id}</p>')
+
+
+def categories_by_slug(request, cat_slug):
+    return HttpResponse(f'<h1>Статьи по категориям</h1><p>{cat_slug}</p>')
+
+
+def archive(request, year):
+    if year > 2024:
+        # permanent=True - доп параметр для 301 редиректа
+        uri = reverse('cats', args=('sport', ))
+        return HttpResponsePermanentRedirect(uri)
+    return HttpResponse(f'<h1>Архив по категориям</h1><p>{year}</p>')
+"""
 
 
 def show_category(request, cat_slug):
