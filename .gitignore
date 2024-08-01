@@ -5,3 +5,5 @@ djvenv
 images
 __pycache__
 db.sqlite3
+/uploads/
+/media/

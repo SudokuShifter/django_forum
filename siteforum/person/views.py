@@ -3,9 +3,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
+import uuid
 
-from .forms import AddPostForm
-from .models import Person, Category, TagPost
+from .forms import AddPostForm, UploadFileForm
+from .models import Person, Category, TagPost, UploadFiles
 
 menu = [{'title': 'О сайте', 'url_name': 'about'},
         {'title': 'Добавить статью', 'url_name': 'add_page'},
@@ -26,8 +27,25 @@ def index(request):
     return render(request, 'person/index.html', context=data)
 
 
+# def handle_uploaded_file(f):
+#     f_name, f_ex = f.name.split('.')
+#     with open(f'uploads/{uuid.uuid4()}.{f_ex}', 'wb+') as destination:
+#         for chunk in f.chunks():
+#             destination.write(chunk)
+
+
 def about(request):
-    return render(request, 'person/about.html', {'title': 'О сайте', 'menu': menu})
+    if request.method == 'POST':
+        # handle_uploaded_file(request.FILES['file_upload'])
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            # handle_uploaded_file(form.cleaned_data['file'])
+            fp = UploadFiles(file=form.cleaned_data['file'])
+            fp.save()
+    else:
+        form = UploadFileForm()
+    return render(request, 'person/about.html',
+                  {'title': 'О сайте', 'menu': menu, 'form': form})
 
 
 def show_post(request, post_slug):
@@ -45,7 +63,7 @@ def show_post(request, post_slug):
 
 def addpage(request):
     if request.method == 'POST':
-        form = AddPostForm(request.POST)
+        form = AddPostForm(request.POST, request.FILES)
         if form.is_valid():
             """
             Вариант сохранения данных в БД

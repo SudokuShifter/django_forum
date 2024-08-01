@@ -129,6 +129,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Укажите директорию для дополнительных статических файлов, если необходимо
 
 # Default primary key field type

@@ -38,13 +38,14 @@ class AddPostForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea(), required=False, label='Содержание')
     is_published = forms.BooleanField(required=False, initial=True, label='Статус')
     """
-    cat = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label='Не выбрана', label='Категория')
+    cat = forms.ModelChoiceField(queryset=Category.objects.all(),
+                                 empty_label='Не выбрана', label='Категория')
     wife = forms.ModelChoiceField(queryset=Wife.objects.all(),
                                   required=False, empty_label='Не женат', label='Супруга')
 
     class Meta:
         model = Person
-        fields = ['title', 'slug', 'content', 'is_published', 'cat', 'wife', 'tags']
+        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'wife', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'content': forms.Textarea(attrs={'cols': 50, 'forms': 5}),
@@ -68,3 +69,8 @@ class AddPostForm(forms.ModelForm):
         if not (set(title) <= set(ALLOWED_CHARS)):
             raise ValidationError('Должны присутствовать только русские символы, дефис и пробел')
     """
+
+
+class UploadFileForm(forms.Form):
+    # file = forms.FileField(label='Файл')
+    file = forms.ImageField(label='Файл')
