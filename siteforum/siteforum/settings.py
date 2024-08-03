@@ -130,6 +130,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
 
 # Укажите директорию для дополнительных статических файлов, если необходимо
 
