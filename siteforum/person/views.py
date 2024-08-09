@@ -5,6 +5,9 @@ from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 import uuid
 
+from django.views import View
+from django.views.generic import TemplateView
+
 from .forms import AddPostForm, UploadFileForm
 from .models import Person, Category, TagPost, UploadFiles
 
@@ -27,6 +30,28 @@ def index(request):
     return render(request, 'person/index.html', context=data)
 
 
+class PersonHome(TemplateView):
+    template_name = 'person/index.html'
+
+    data = {
+        'title': 'Главная страница',
+        'menu': menu,
+        'posts': Person.published.all().select_related('cat'),
+        'cat_selected': 0,
+    }
+
+    # Динамическое изменение словаря контекст для передачи каких-то данных через ПОСТ-запросы
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['title'] = 'Главная страница'
+    #     context['menu'] = menu
+    #     context['posts'] = Person.published.all().select_related('cat')
+    #     context['cat_selected'] = int(self.request.GET.get('cat_id', 0))
+    #
+    #     return context
+
+
+# Метод загрузки фотографий через чанки
 # def handle_uploaded_file(f):
 #     f_name, f_ex = f.name.split('.')
 #     with open(f'uploads/{uuid.uuid4()}.{f_ex}', 'wb+') as destination:
@@ -83,6 +108,29 @@ def addpage(request):
         'form': form,
     }
     return render(request, 'person/addpage.html', data)
+
+
+class AddPage(View):
+    def get(self, request):
+        form = AddPostForm()
+        data = {
+            'menu': menu,
+            'title': 'Добавить статью',
+            'form': form,
+        }
+        return render(request, 'person/addpage.html', data)
+
+    def post(self, request):
+        form = AddPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        data = {
+            'menu': menu,
+            'title': 'Добавить статью',
+            'form': form,
+        }
+        return render(request, 'person/addpage.html', data)
 
 
 def contact(request):
